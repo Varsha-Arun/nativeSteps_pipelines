@@ -8,6 +8,20 @@ resources:
       path: Varsha-Arun/nativeSteps_pipelines
       branches:
         include: docker
+        
+  - name: t_docker_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: t_artifactory
+      buildNumber: 1
+      buildName: dockertest  
+      
+  - name: t_promote_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: t_artifactory
+      buildNumber: 1
+      buildName: dockertest  
 
 pipelines:
   - name: t_docker_pipeline
@@ -22,6 +36,7 @@ pipelines:
             - name: t_docker_gitRepo
           integrations:
             - name: t_artifactory
+            
       - name: t_docker_push
         type: DockerPush
         configuration:
@@ -31,3 +46,24 @@ pipelines:
             - name: t_dockerBuild
           integrations:
             - name: t_artifactory
+
+      - name: t_docker_publish
+        type: PublishBuildInfo
+        configuration:
+          affinityGroup: t_docker
+          inputSteps:
+            - name: docker_push
+          outputResources:
+            - name: t_docker_build_info  
+
+      - name: t_promote_build
+        type: PromoteBuild
+        configuration:
+          affinityGroup: t_docker
+          targetRepository: test-promotion-docker-local
+          inputResources:
+            - name: t_docker_build_info
+#               trigger: false
+          outputResources:
+            - name: t_promote_build_info
+ 
