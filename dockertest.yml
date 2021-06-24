@@ -1,33 +1,33 @@
 template: true
 
 resources:
-  - name: tDocker_GitRepo
+  - name: t_docker_gitRepo
     type: GitRepo
     configuration:
-      gitProvider: tgithub
+      gitProvider: t_github
       path: Varsha-Arun/nativeSteps_pipelines
       branches:
         include: docker
 
 pipelines:
-  - name: tDocker_pipeline
+  - name: t_docker_pipeline
     steps:
-      - name: tDockerBuild
+      - name: t_docker_build
         type: DockerBuild
         configuration:
-          affinityGroup: t_Docker
-          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/tDockerBuild
+          affinityGroup: t_docker
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/t_docker_build
           dockerImageTag: ${run_id}
           inputResources:
-            - name: S_DockerPush_5849_001_GitRepo
+            - name: t_docker_gitRepo
           integrations:
-            - name: s_artifactory
-      - name: tDockerPush
+            - name: t_artifactory
+      - name: t_docker_push
         type: DockerPush
         configuration:
-          affinityGroup: tDocker
+          affinityGroup: t_docker
           targetRepository: test-automation-docker-local
           inputSteps:
-            - name: tDockerBuild
+            - name: t_dockerBuild
           integrations:
-            - name: tartifactory
+            - name: t_artifactory
