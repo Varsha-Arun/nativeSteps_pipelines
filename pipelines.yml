@@ -1,0 +1,9 @@
+pipelines:
+  - name: thanosPipeline
+    steps:
+
+      - name: thanosStep
+        type: Bash
+        execution:
+          onExecute:
+            - echo "Hello world"
